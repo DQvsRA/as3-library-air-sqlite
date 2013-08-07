@@ -11,22 +11,8 @@ package com.probertson.database.structure
 			throw new IllegalOperationError("add operation not supported");
 		}
 		
-		public function insertRecord( columnTitle:String, dataObject:Object):void {
-			throw new IllegalOperationError("row operation not supported");
-		}
+	
 
-        /**
-         * Delete a table row by reference;
-         *
-         * TODO not sure how to implement this yet
-         *
-         * @param reference can be the table id
-         * @param data
-         */
-		public function deleteRow( reference:*, data:* ):void {
-			throw new IllegalOperationError("row operation not supported");
-		}
-		
 		public function removeColumn(c:AbstractTable):void {
 			throw new IllegalOperationError("remove operation not supported");
 		}

@@ -29,14 +29,9 @@ package com.probertson.database.structure
 		override public function addColumn(c:AbstractTable):void {
 			aColumns.push(c);
 		}
+
 		
-		override public function insertRecord( columnTitle:String, dataObject:Object ):void {
-			getColumnByTitle( columnTitle ).data( dataObject );
-		}
-		
-		override public function deleteRow( reference:*, data:* ):void {
-			//TODO needs implementation
-		}
+
 		
 		private function getColumnByTitle( sTitle:String ):Column {
 			for each (var c:Column in aColumns) {
@@ -114,6 +109,31 @@ package com.probertson.database.structure
 			return sql;
 		}
 		
+		/**
+		 * <p>Get syntax to update a record in the database. The result will be similar to</p>
+		 * 
+		 * <code>UPDATE main.user SET firstName = :firstName, lastName = :lastName WHERE category = :category</code>
+		 * 
+		 * <p>A table is required to be instantiated before this method is called:</p>
+		 * 
+		 * <code>
+		 *  var userTable = new Table( "user" );
+		 *  userTable.addColumn( new Column( "id", Column.INT_PK_AI ) );
+		 *  userTable.addColumn( new Column( "category", Column.TEXT ) );
+		 *  userTable.addColumn( new Column( "firstName", Column.TEXT ) );
+		 *  userTable.addColumn( new Column( "lastName", Column.TEXT ));
+		 * </code>
+		 * 
+		 * <p>Get the parsed syntax, then by calling:</p>
+		 * 
+		 * <code>userTable.getUpdateSyntax( "category", {id:false} )</code>
+		 *  
+		 * @param columnTitle The Column Title which to target the update
+		 * @param exclude Columns to exclude from the update. Format is {ColumnTitle:false}. The Column
+		 * 			title (object property) is always set to false. Nothing is done to include a column.
+		 * @return 
+		 * 
+		 */		
 		override public function getUpdateSyntax( columnTitle:String, exclude:Object ):String
 		{
 			var sql:String = Table.UPDATE + this.sName + " SET ";
@@ -122,13 +142,13 @@ package com.probertson.database.structure
 			for (var i:int = 0; i < colLen; i++) {
 		
 				if ( aColumns[i].title != columnTitle && exclude[aColumns[i].title] == null ) { //do not include autoincrement primary key
-					sql += aColumns[i].getInsertSyntax();
+					sql += aColumns[i].getUpdateSyntax(null, null);
 					sql += (i < colLen - 1) ? ", " : "";
 				}
 				
 			}
 			
-			sql += " WHERE  " + String(columnTitle) + " = :" + String(columnTitle);
+			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
 			
 			
 			
