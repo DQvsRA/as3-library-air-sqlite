@@ -11,7 +11,9 @@ package com.probertson.database.structure
 		/**
 		 * CREATE TABLE IF NOT EXISTS
 		 */
-		public static const CREATE:String = "CREATE TABLE IF NOT EXISTS ";
+		public static const CREATE:String = "CREATE TABLE IF NOT EXISTS main.";
+		public static const INSERT:String = "INSERT INTO main.";
+		public static const UPDATE:String = "UPDATE main.";
 		
 		protected var sName:String;
 		protected var aColumns:Array;
@@ -28,7 +30,7 @@ package com.probertson.database.structure
 			aColumns.push(c);
 		}
 		
-		override public function addRow( columnTitle:String, dataObject:Object ):void {
+		override public function insertRecord( columnTitle:String, dataObject:Object ):void {
 			getColumnByTitle( columnTitle ).data( dataObject );
 		}
 		
@@ -59,18 +61,76 @@ package com.probertson.database.structure
 			}
 		}
 		
-		//TODO create colu
-		override public function create():String
+		/**
+		 * <p>Returns SQL syntax to creat a table for SQLite to execute.</p>
+		 * 
+		 * <p>EXAMPLE: </br>
+		 * <code>CREATE TABLE IF NOT EXISTS employees ( id INTEGER PRIMARY KEY AUTOINCREMENT, phone NUMBERIC, name TEXT )</code>
+		 * </p>
+		 * 
+		 * 
+		 */
+		override public function getCreateSyntax():String
 		{
 			
 			var sql:String = Table.CREATE + this.sName + " ( ";
 			
-			//Add each column
-			for each (var c:AbstractTable in aColumns) {
-				sql += c.create() + ", ";
+			var colLen:int = aColumns.length;
+			for (var i:int = 0; i < colLen; i++) {
+				sql += aColumns[i].getCreateSyntax();
+				sql += (i < colLen - 1) ? ", " : "";
 			}
 			
-			sql = sql.substring(0, sql.length - 2) + " )";
+			sql += " )";
+			
+			return sql;
+		}
+		
+	 	
+		override public function getInsertSyntax():String
+		{
+			var sql:String = Table.INSERT + this.sName + " ( ";
+			
+			var colLen:int = aColumns.length;
+			for (var i:int = 0; i < colLen; i++) {
+				if ( aColumns[i].type != Column.INT_PK_AI ) { //do not include autoincrement primary key
+					sql += aColumns[i].getInsertSyntax();
+					sql += (i < colLen - 1) ? ", " : "";
+				}
+				
+			}
+			
+			sql += " ) VALUES ( ";
+			
+			for (i = 0; i < colLen; i++) {
+				if ( aColumns[i].type != Column.INT_PK_AI ) { //do not include autoincrement primary key
+					sql += aColumns[i].parameter();
+					sql += (i < colLen - 1) ? ", " : "";
+				}
+			}
+			
+			sql += " )";
+			
+			return sql;
+		}
+		
+		override public function getUpdateSyntax( columnTitle:String, exclude:Object ):String
+		{
+			var sql:String = Table.UPDATE + this.sName + " SET ";
+			
+			var colLen:int = aColumns.length;
+			for (var i:int = 0; i < colLen; i++) {
+		
+				if ( aColumns[i].title != columnTitle && exclude[aColumns[i].title] == null ) { //do not include autoincrement primary key
+					sql += aColumns[i].getInsertSyntax();
+					sql += (i < colLen - 1) ? ", " : "";
+				}
+				
+			}
+			
+			sql += " WHERE  " + String(columnTitle) + " = :" + String(columnTitle);
+			
+			
 			
 			return sql;
 		}

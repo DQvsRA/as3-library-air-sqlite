@@ -11,7 +11,7 @@ package com.probertson.database.structure
 			throw new IllegalOperationError("add operation not supported");
 		}
 		
-		public function addRow( columnTitle:String, dataObject:Object):void {
+		public function insertRecord( columnTitle:String, dataObject:Object):void {
 			throw new IllegalOperationError("row operation not supported");
 		}
 
@@ -40,10 +40,26 @@ package com.probertson.database.structure
 		public function operation():void {
 		}
 		
-		public function create():String {
+		public function getCreateSyntax():String {
 			throw new IllegalOperationError("create operation not supported");
 			return null;
 		}
+		
+		public function getInsertSyntax():String {
+			throw new IllegalOperationError("create operation not supported");
+			return null;
+		}
+		
+		public function getUpdateSyntax( columnTitle:String, exclude:Object ):String {
+			throw new IllegalOperationError("create operation not supported");
+			return null;
+		}
+		
+		public function parameter():String {
+			throw new IllegalOperationError("create operation not supported");
+			return null;
+		}
+		
 		
 	}
 }

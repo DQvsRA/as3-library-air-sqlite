@@ -29,6 +29,7 @@ package com.probertson.database.structure
 			this._data = new Dictionary();
 		}
 		
+		
 		public function data(sData:Object):void {
 //			trace( "COLUMN DATA: " + sData.id + ", " + encodeURIComponent( sData.data ));
 			this._data[sData.id] = sData.data;
@@ -38,12 +39,30 @@ package com.probertson.database.structure
 			trace(this._title);
 		}
 		
-		override public function create():String {
+		override public function getCreateSyntax():String {
 			return this._title + " "  + this._type;
+		}
+		
+		override public function getInsertSyntax():String {
+			return this._title;
+		}
+		
+		override public function getUpdateSyntax( columnTitle:String, exclude:Object ):String {
+			return this._title + " = :" + this._title;
+		}
+		
+		override public function parameter():String
+		{
+			return ":" + this._title;
 		}
 		
 		public function get title():String {
 			return _title;
+		}
+		
+		public function get type():String
+		{
+			return _type;
 		}
 		
 		
