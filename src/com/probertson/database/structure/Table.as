@@ -14,6 +14,7 @@ package com.probertson.database.structure
 		public static const CREATE:String = "CREATE TABLE IF NOT EXISTS main.";
 		public static const INSERT:String = "INSERT INTO main.";
 		public static const UPDATE:String = "UPDATE main.";
+		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main."; 
 		
 		protected var sName:String;
 		protected var aColumns:Array;

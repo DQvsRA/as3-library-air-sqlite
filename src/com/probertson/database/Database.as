@@ -5,12 +5,9 @@ package com.probertson.database
 	import com.probertson.database.interfaces.IDatabase;
 	
 	import flash.data.SQLConnection;
-	import flash.data.SQLResult;
 	import flash.data.SQLStatement;
 	import flash.errors.IllegalOperationError;
 	import flash.errors.SQLError;
-	import flash.events.SQLErrorEvent;
-	import flash.events.SQLEvent;
 	import flash.filesystem.File;
 	import flash.net.Responder;
 	import flash.utils.Dictionary;
@@ -22,7 +19,7 @@ package com.probertson.database
 		private var _dbFile:File; 
 		private var _sqlRunner:SQLRunner; 
 		private var _tables:Vector.<String>;
-		private var _sqlStmtsQueue:Vector.<SQLStatement>;
+//		private var _sqlStmtsQueue:Vector.<SQLStatement>;
 		private var _sqlStmtCount:int = 0;
 		private var _tableCreateResponder:Responder;
 		private var _statementTracker:Dictionary;
@@ -46,12 +43,12 @@ package com.probertson.database
 
 			this._dbFile = File.applicationStorageDirectory.resolvePath( dbFileName ); 
 			this._tables = new Vector.<String>;
-			this._sqlStmtsQueue = new Vector.<SQLStatement>;
+//			this._sqlStmtsQueue = new Vector.<SQLStatement>;
 			this._statementTracker = new Dictionary();
 			
 			_sqlRunner = new SQLRunner( this._dbFile );
 			
-			_tableCreateResponder = new Responder( onCreateTableResult, onCreateTableError );
+//			_tableCreateResponder = new Responder( onCreateTableResult, onCreateTableError );
 			
 //			_conn.addEventListener(SQLEvent.OPEN, openHandler); 
 //			_conn.addEventListener(SQLErrorEvent.ERROR, errorHandler); 
@@ -88,7 +85,7 @@ package com.probertson.database
 		}
 		
 		
-		
+		/*
 		public function executeCreateTables( callback:Function = null):void {
 			this._creatTableCallback = callback;
 			
@@ -108,8 +105,8 @@ package com.probertson.database
 				this._sqlStmtsQueue[i].execute( -1, _tableCreateResponder );
 			}
 		}
-		
-		
+		*/
+		/*
 		private function onCreateTableResult(result:SQLResult):void 
 		{ 
 			_sqlStmtCount--;
@@ -128,7 +125,7 @@ package com.probertson.database
 				
 			}
 		} 
-		
+		*/
 		private function onCreateTableError(error:SQLError):void 
 		{ 
 			// do something after the statement execution fails 
