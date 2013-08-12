@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="as3-library-air-sqlite">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bin/as3-library-air-sqlite.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

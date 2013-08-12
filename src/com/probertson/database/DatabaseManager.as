@@ -3,24 +3,20 @@ package com.probertson.database
 	
 	import com.probertson.database.interfaces.IDatabase;
 	
-	import flash.errors.IllegalOperationError;
-	
-	public class DatabaseManager
+	import flash.utils.Dictionary;
+
+
+public class DatabaseManager
 	{
-		private var _databaseArray:Vector.<IDatabase>;
+        private var databaseDict:Dictionary;
 		private static  var _instance:DatabaseManager;
 		
 		public function DatabaseManager( pvt:PrivateClass )
 		{
-			this._databaseArray = new Vector.<IDatabase>();
+            this.databaseDict = new Dictionary();
 		}
 		
-		//Singleton constructor method
 
-		public function get databaseArray():Vector.<IDatabase>
-		{
-			return _databaseArray;
-		}
 
 		public static  function getInstance ():DatabaseManager
 		{
@@ -33,30 +29,14 @@ package com.probertson.database
 		}
 		
 
-		public static function addDatabase( _database:IDatabase ):void
+		public static function addDatabase( _database:Database ):void
 		{
-			DatabaseManager.getInstance().databaseArray.push( _database );
+            DatabaseManager.getInstance().databaseDict[ _database.name ] = _database;
 		}
 		
 		public static function getDatabase( databaseFilename:String ):IDatabase
 		{
-			var dbLen:int = DatabaseManager._instance.databaseArray.length;
-			var db:IDatabase;
-			for ( var i:int = 0; i < dbLen; i++ )
-			{
-				if ( DatabaseManager._instance.databaseArray[i].dbFilename == databaseFilename )
-				{
-					db = DatabaseManager._instance.databaseArray[i];
-					break;
-				}
-			}
-			
-			if ( db == null )
-			{
-				throw new IllegalOperationError( databaseFilename + " does not exist in DatabaseManager."); 
-			}
-			
-			return db;
+            return DatabaseManager.getInstance().databaseDict[ databaseFilename ];
 		}
 		
 	}

@@ -4,10 +4,7 @@ package com.probertson.database.interfaces
 
 	public interface IDatabase
 	{
-		function get dbFilename():String;
-		function addTable( table:String ):void;
-//		function executeCreateTables( callback:Function = null):void
 		function execute(sql:String, parameters:Object, handler:Function, itemClass:Class=null):void;
-		function executeModify(statementBatch:Vector.<QueuedStatement>, resultHandler:Function, errorHandler:Function, progressHandler:Function):void;
+		function executeModify(statementBatch:Vector.<QueuedStatement> = null, resultHandler:Function = null, errorHandler:Function = null, progressHandler:Function = null):void;
 	}
 }

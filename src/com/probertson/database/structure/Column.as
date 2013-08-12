@@ -1,9 +1,15 @@
 package com.probertson.database.structure
 {
-	import flash.utils.Dictionary;
 
-	public class Column extends AbstractTable
+
+import com.probertson.database.interfaces.ISyntax;
+
+import flash.utils.Dictionary;
+
+	public class Column extends AbstractDatabase implements ISyntax
 	{
+		public static const DROP_RECORD:String = "DROP";
+		
 		private var _title:String;
 		private var _type:String;
 		private var _data:Dictionary;
@@ -23,9 +29,10 @@ package com.probertson.database.structure
 		 */
 		public static const NUMERIC:String = "NUMBERIC";
 		
-		public function Column(sColumnTitle:String, sColumnType):void {
+		public function Column(sColumnTitle:String, columnType):void {
 			this._title = sColumnTitle;
-			this._type = sColumnType;
+			this.name = sColumnTitle;
+			this._type = columnType;
 			this._data = new Dictionary();
 		}
 		
@@ -35,23 +42,27 @@ package com.probertson.database.structure
 			this._data[sData.id] = sData.data;
 		}
 		
-		override public function operation():void {
+		public function operation():void {
 			trace(this._title);
 		}
 		
-		override public function getCreateSyntax():String {
+		public function getCreateSyntax():String {
 			return this._title + " "  + this._type;
 		}
 		
-		override public function getInsertSyntax():String {
+		public function getInsertSyntax():String {
 			return this._title;
 		}
 		
-		override public function getUpdateSyntax( columnTitle:String, exclude:Object ):String {
+		public function getUpdateSyntax( columnTitle:String, exclude:Object ):String {
 			return this._title + " = :" + this._title;
 		}
+
+        public function getDropSyntax( title:String, exclude:Object ):String {
+			return Column.DROP_RECORD;
+        }
 		
-		override public function parameter():String
+		public function parameter():String
 		{
 			return ":" + this._title;
 		}

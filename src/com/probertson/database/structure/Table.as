@@ -1,11 +1,12 @@
 package com.probertson.database.structure
 {
 	
-	import com.probertson.database.structure.AbstractTable;
-	import com.probertson.database.structure.Column;
+	import com.probertson.database.interfaces.ISyntax;
 	
+	import flash.utils.Dictionary;
 
-	public class Table extends AbstractTable
+
+public class Table extends AbstractDatabase implements ISyntax
 	{
 		
 		/**
@@ -15,47 +16,61 @@ package com.probertson.database.structure
 		public static const INSERT:String = "INSERT INTO main.";
 		public static const UPDATE:String = "UPDATE main.";
 		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main."; 
-		
-		protected var sName:String;
+	
 		protected var aColumns:Array;
-		protected var aRow:Array;
+        protected var _columnsDictionary:Dictionary;
 		
-		public function Table( sNodeName:String )
+		protected var _records:Array;
+		
+		public function Table( columnTitle:String )
 		{
-			this.sName = sNodeName;
-			this.aColumns = new Array();
-			this.aRow = new Array();
+			this._name = columnTitle;
+            this._columnsDictionary = new Dictionary();
+			this._records = new Array();
 		}
-		
-		override public function addColumn(c:AbstractTable):void {
-			aColumns.push(c);
-		}
-
 		
 
-		
-		private function getColumnByTitle( sTitle:String ):Column {
-			for each (var c:Column in aColumns) {
-				if (c.title == sTitle) {
-					return c;
-				}
-			}
-			return null;
-		}
-		
-		override public function getColumn(n:int):AbstractTable { 
-			if ((n > 0) && (n <= aColumns.length)) {
-				return aColumns[n-1];
-			} else {
-				return null;
-			}
-		}
-		
-		override public function operation():void {
-			for each (var c:AbstractTable in aColumns) {
-				c.operation();
-			}
-		}
+        //Abstract functonality
+        //Abstract functonality
+        //Abstract functonality
+
+        override public function add( column:AbstractDatabase ):void
+        {
+            this._columnsDictionary[ column.name ] = column;
+            column.setParent( this );
+			this.length++;
+        }
+
+        private function safeRemove(c:AbstractDatabase):void {
+            if (c.getComposite()) {
+                c.remove(c); // composite
+            } else {
+                c.removeParentRef();
+            }
+        }
+
+        override public function getChild( table:AbstractDatabase ):AbstractDatabase
+        {
+            return this._columnsDictionary[ table.name ];
+        }
+
+        override public function remove( column:AbstractDatabase ):void
+        {
+			this.length--;
+            if ( column === this ) {
+                for ( var k:Object in this._columnsDictionary ) {
+                    safeRemove( this._columnsDictionary[k] );
+                    delete this._columnsDictionary[k];
+                }
+            } else {
+                for ( var j:Object in this._columnsDictionary ) {
+                    if ( this._columnsDictionary[j] == column ) {
+                        safeRemove( this._columnsDictionary[j] );
+                        delete this._columnsDictionary[j];
+                    }
+                }
+            }
+        }
 		
 		/**
 		 * <p>Returns SQL syntax to creat a table for SQLite to execute.</p>
@@ -66,15 +81,16 @@ package com.probertson.database.structure
 		 * 
 		 * 
 		 */
-		override public function getCreateSyntax():String
+		public function getCreateSyntax():String
 		{
 			
-			var sql:String = Table.CREATE + this.sName + " ( ";
-			
-			var colLen:int = aColumns.length;
-			for (var i:int = 0; i < colLen; i++) {
-				sql += aColumns[i].getCreateSyntax();
-				sql += (i < colLen - 1) ? ", " : "";
+			var sql:String = Table.CREATE + this.name + " ( ";
+
+			var iter:int = 0;
+			for ( var k:Object in this._columnsDictionary ) {
+				sql += this._columnsDictionary[k].getCreateSyntax();
+				iter++;
+				sql += ( iter < this.length ) ? ", " : "";
 			}
 			
 			sql += " )";
@@ -83,25 +99,31 @@ package com.probertson.database.structure
 		}
 		
 	 	
-		override public function getInsertSyntax():String
+		public function getInsertSyntax():String
 		{
-			var sql:String = Table.INSERT + this.sName + " ( ";
+			var sql:String = Table.INSERT + this.name + " ( ";
 			
-			var colLen:int = aColumns.length;
-			for (var i:int = 0; i < colLen; i++) {
-				if ( aColumns[i].type != Column.INT_PK_AI ) { //do not include autoincrement primary key
-					sql += aColumns[i].getInsertSyntax();
-					sql += (i < colLen - 1) ? ", " : "";
-				}
+			var iter:int = 0;
+			for ( var j:Object in this._columnsDictionary ) {
+				iter++;
 				
+				if ( this._columnsDictionary[j].type != Column.INT_PK_AI ) {
+					sql += this._columnsDictionary[j].getInsertSyntax();
+					sql += ( iter < this.length - 1 ) ? ", " : "";
+				}
 			}
-			
+
 			sql += " ) VALUES ( ";
 			
-			for (i = 0; i < colLen; i++) {
-				if ( aColumns[i].type != Column.INT_PK_AI ) { //do not include autoincrement primary key
-					sql += aColumns[i].parameter();
-					sql += (i < colLen - 1) ? ", " : "";
+
+			iter = 0;
+			for ( var k:Object in this._columnsDictionary ) {
+				
+				iter++;
+				
+				if ( this._columnsDictionary[k].type != Column.INT_PK_AI ) {
+					sql += this._columnsDictionary[k].parameter();
+					sql += ( iter < this.length - 1 ) ? ", " : "";
 				}
 			}
 			
@@ -135,29 +157,26 @@ package com.probertson.database.structure
 		 * @return 
 		 * 
 		 */		
-		override public function getUpdateSyntax( columnTitle:String, exclude:Object ):String
+		public function getUpdateSyntax( columnTitle:String, exclude:Object ):String
 		{
-			var sql:String = Table.UPDATE + this.sName + " SET ";
-			
-			var colLen:int = aColumns.length;
-			for (var i:int = 0; i < colLen; i++) {
-		
-				if ( aColumns[i].title != columnTitle && exclude[aColumns[i].title] == null ) { //do not include autoincrement primary key
-					sql += aColumns[i].getUpdateSyntax(null, null);
-					sql += (i < colLen - 1) ? ", " : "";
+			var sql:String = Table.UPDATE + this.name + " SET ";
+
+			var iter:int = 0;
+			for ( var j:Object in this._columnsDictionary ) {
+				iter++;
+				if ( this._columnsDictionary[j].title != columnTitle && exclude[ this._columnsDictionary[j].title ] == null ) {
+					sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
+					sql += ( iter < this.length - 1 ) ? ", " : "";
 				}
-				
 			}
 			
 			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
-			
-			
-			
+
 			return sql;
 		}
 
-		
-		
-		
+        public function getDropSyntax( columnTitle:String, exclude:Object ):String {
+            return Table.DROP_TABLE + this.name;
+        }
 	}
 }
