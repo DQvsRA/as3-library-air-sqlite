@@ -29,7 +29,6 @@ public class Table extends AbstractDatabase implements ISyntax
 		{
 			this._name = columnTitle;
             this._columnsDictionary = new Dictionary();
-
 		}
 		
 
