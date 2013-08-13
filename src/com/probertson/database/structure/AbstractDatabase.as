@@ -10,6 +10,12 @@ package com.probertson.database.structure {
 
 import com.probertson.database.errors.AbstractMethodError;
 
+
+/**
+ * Serves both as an Abstract Composite Class and Abstract Template Class.
+ * @author Jerry_Orta
+ * 
+ */
 public class AbstractDatabase {
 
     protected var _name:String;
@@ -34,7 +40,7 @@ public class AbstractDatabase {
 
     public function remove(c:AbstractDatabase):void { throw new AbstractMethodError(); }
 
-    public function getChild( c:AbstractDatabase ):AbstractDatabase {
+    public function getChildByName( name:String ):AbstractDatabase {
         throw new AbstractMethodError();
         return null;
     }
@@ -54,5 +60,7 @@ public class AbstractDatabase {
     public function getComposite():AbstractDatabase {
         return null;
     }
+	
+	
 }
 }

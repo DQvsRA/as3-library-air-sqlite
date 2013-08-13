@@ -15,18 +15,21 @@ public class Table extends AbstractDatabase implements ISyntax
 		public static const CREATE:String = "CREATE TABLE IF NOT EXISTS main.";
 		public static const INSERT:String = "INSERT INTO main.";
 		public static const UPDATE:String = "UPDATE main.";
-		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main."; 
+		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main.";
+		public static const SELECT:String = "SELECT ";
 	
 		protected var aColumns:Array;
         protected var _columnsDictionary:Dictionary;
+		public static var isCreated:Boolean = false;
+		public var itemClass:Class;
 		
-		protected var _records:Array;
+		private var _lastRecordPK:int = 1;
 		
 		public function Table( columnTitle:String )
 		{
 			this._name = columnTitle;
             this._columnsDictionary = new Dictionary();
-			this._records = new Array();
+
 		}
 		
 
@@ -40,6 +43,23 @@ public class Table extends AbstractDatabase implements ISyntax
             column.setParent( this );
 			this.length++;
         }
+		
+		/**
+		 *Add data to columns 
+		 * @param dataObject
+		 * 
+		 */		
+		public function insert( dataObject:Object):void
+		{
+			//			_db.addToStmtQueue( new QueuedStatement(serversTable.getInsertSyntax(), {port:"8888", webRoot:"C:\Users\jerry_orta\Documents\GitHub"}));
+//			_db.addToStmtQueue( new QueuedStatement( this.getInsertSyntax(), dataObject));
+			//Get columns
+			/*for ( var key:Object in dataObject )
+			{
+				this.getColumnByTitle( key.toString() ).insert( dataObject[key] );
+			}*/
+			//Insert data
+		}
 
         private function safeRemove(c:AbstractDatabase):void {
             if (c.getComposite()) {
@@ -49,10 +69,15 @@ public class Table extends AbstractDatabase implements ISyntax
             }
         }
 
-        override public function getChild( table:AbstractDatabase ):AbstractDatabase
+        override public function getChildByName( columnName:String ):AbstractDatabase
         {
-            return this._columnsDictionary[ table.name ];
+            return this._columnsDictionary[ columnName ];
         }
+		
+		public function getColumnByTitle( title:String):Column
+		{
+			return this._columnsDictionary[ title ];
+		}
 
         override public function remove( column:AbstractDatabase ):void
         {
@@ -86,15 +111,17 @@ public class Table extends AbstractDatabase implements ISyntax
 			
 			var sql:String = Table.CREATE + this.name + " ( ";
 
-			var iter:int = 0;
+			var isFirst:Boolean = true;
 			for ( var k:Object in this._columnsDictionary ) {
+				if (!isFirst) {
+					sql += ", "; 
+				}
 				sql += this._columnsDictionary[k].getCreateSyntax();
-				iter++;
-				sql += ( iter < this.length ) ? ", " : "";
+				isFirst = false;
 			}
 			
 			sql += " )";
-			
+			trace(sql);
 			return sql;
 		}
 		
@@ -102,33 +129,41 @@ public class Table extends AbstractDatabase implements ISyntax
 		public function getInsertSyntax():String
 		{
 			var sql:String = Table.INSERT + this.name + " ( ";
-			
-			var iter:int = 0;
+
+			var isFirst:Boolean = true;
 			for ( var j:Object in this._columnsDictionary ) {
-				iter++;
 				
 				if ( this._columnsDictionary[j].type != Column.INT_PK_AI ) {
+					if (!isFirst) {
+						sql += ", "; 
+					}
 					sql += this._columnsDictionary[j].getInsertSyntax();
-					sql += ( iter < this.length - 1 ) ? ", " : "";
+					isFirst = false;
 				}
+				
+				
 			}
 
 			sql += " ) VALUES ( ";
 			
 
-			iter = 0;
+			
+			isFirst = true;
 			for ( var k:Object in this._columnsDictionary ) {
 				
-				iter++;
 				
 				if ( this._columnsDictionary[k].type != Column.INT_PK_AI ) {
+					if (!isFirst) {
+						sql += ", "; 
+					}
 					sql += this._columnsDictionary[k].parameter();
-					sql += ( iter < this.length - 1 ) ? ", " : "";
-				}
+					isFirst = false;
+				} 
+				
 			}
 			
 			sql += " )";
-			
+			trace(sql);
 			return sql;
 		}
 		
@@ -161,22 +196,44 @@ public class Table extends AbstractDatabase implements ISyntax
 		{
 			var sql:String = Table.UPDATE + this.name + " SET ";
 
-			var iter:int = 0;
+			var isFirst:Boolean = true;
 			for ( var j:Object in this._columnsDictionary ) {
-				iter++;
+				
 				if ( this._columnsDictionary[j].title != columnTitle && exclude[ this._columnsDictionary[j].title ] == null ) {
+					if (!isFirst) {
+						sql += ", "; 
+					}
 					sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
-					sql += ( iter < this.length - 1 ) ? ", " : "";
+					isFirst = false;
 				}
+				
 			}
 			
 			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
-
+			trace(sql);
 			return sql;
 		}
 
         public function getDropSyntax( columnTitle:String, exclude:Object ):String {
             return Table.DROP_TABLE + this.name;
         }
+		
+		public function getSelectAllSyntax():String 
+		{
+			var sql:String = Table.SELECT;
+			
+			var isFirst:Boolean = true;
+			for ( var j:Object in this._columnsDictionary ) {
+				if (!isFirst) {
+					sql += ", "; 
+				}
+				sql += this._columnsDictionary[j].title;
+				isFirst = false;
+			}
+			
+			sql += " FROM main." + this._name;
+			trace(sql);
+			return sql;
+		}
 	}
 }

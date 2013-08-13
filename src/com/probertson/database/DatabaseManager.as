@@ -1,9 +1,8 @@
 package com.probertson.database
 {
 	
-	import com.probertson.database.interfaces.IDatabase;
-	
 	import flash.utils.Dictionary;
+	import com.probertson.database.structure.Database;
 
 
 public class DatabaseManager
@@ -28,14 +27,20 @@ public class DatabaseManager
 			return DatabaseManager._instance;
 		}
 		
-
-		public static function addDatabase( _database:Database ):void
+		public static function addDatabase( template:Template ):void
 		{
-            DatabaseManager.getInstance().databaseDict[ _database.name ] = _database;
+            DatabaseManager.getInstance().databaseDict[ template.name ] = template.database;
 		}
 		
-		public static function getDatabase( databaseFilename:String ):IDatabase
+		/**
+		 * Gets a database by file name. If data base does not exist, it creates a database. 
+		 * @param databaseFilename
+		 * @return 
+		 * 
+		 */		
+		public static function getDatabase( databaseFilename:String ):Database
 		{
+			
             return DatabaseManager.getInstance().databaseDict[ databaseFilename ];
 		}
 		

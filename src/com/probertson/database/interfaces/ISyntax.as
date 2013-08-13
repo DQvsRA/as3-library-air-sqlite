@@ -1,7 +1,5 @@
 package com.probertson.database.interfaces
 {
-import com.probertson.database.errors.AbstractMethodError;
-
 
 	// ABSTRACT Class (should be subclassed and not instantiated)
 	public interface ISyntax {
@@ -13,6 +11,8 @@ import com.probertson.database.errors.AbstractMethodError;
 		function getUpdateSyntax( columnTitle:String, exclude:Object ):String;
 
         function getDropSyntax( title:String, exclude:Object ):String;
+		
+//		function getSelectAllSyntax():String;
 
         function get name():String;
 		

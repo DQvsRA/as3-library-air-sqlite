@@ -13,6 +13,7 @@ import flash.utils.Dictionary;
 		private var _title:String;
 		private var _type:String;
 		private var _data:Dictionary;
+		private var _insertData:Vector.<Object>;
 		
 		/**
 		 * INTEGER PRIMARY KEY AUTOINCREMENT
@@ -36,6 +37,10 @@ import flash.utils.Dictionary;
 			this._data = new Dictionary();
 		}
 		
+		public function insert( data:* ):void
+		{
+			_insertData.push( data );
+		}
 		
 		public function data(sData:Object):void {
 //			trace( "COLUMN DATA: " + sData.id + ", " + encodeURIComponent( sData.data ));
