@@ -21,14 +21,40 @@ import flash.utils.Dictionary;
 		public static const INT_PK_AI:String = "INTEGER PRIMARY KEY AUTOINCREMENT";
 		
 		/**
-		 * TEXT
+		 * TEXT Column type
 		 */
 		public static const TEXT:String = "TEXT";
 		
 		/**
-		 * NUMBERIC
+		 * NUMBERIC Column type
 		 */
 		public static const NUMERIC:String = "NUMBERIC";
+		
+		/**
+		 *  NULL column tyupe
+		 */		
+		public static const NULL:String = "NULL";
+		
+		/**
+		 * INTEGER Column type 
+		 */		
+		public static const INTEGER:String = "INTEGER";
+		
+		/**
+		 * FLOAT Column type 
+		 */		
+		public static const FLOAT:String = "FLOAT";
+		
+		/**
+		 * BLOB Column type 
+		 */		
+		public static const BLOB:String = "BLOB";
+		
+		/**
+		 * NONE Column type 
+		 */		
+		public static const NONE:String = "NONE";
+		
 		
 		public function Column(sColumnTitle:String, columnType):void {
 			this._title = sColumnTitle;
@@ -59,7 +85,7 @@ import flash.utils.Dictionary;
 			return this._title;
 		}
 		
-		public function getUpdateSyntax( columnTitle:String, exclude:Object ):String {
+		public function getUpdateSyntax( titles:Vector.<String>, data:Object ):String {
 			return this._title + " = :" + this._title;
 		}
 

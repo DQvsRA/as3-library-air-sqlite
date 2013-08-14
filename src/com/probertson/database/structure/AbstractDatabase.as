@@ -37,6 +37,7 @@ public class AbstractDatabase {
     }
 
     public function add(c:AbstractDatabase):void { throw new AbstractMethodError(); }
+	
 
     public function remove(c:AbstractDatabase):void { throw new AbstractMethodError(); }
 

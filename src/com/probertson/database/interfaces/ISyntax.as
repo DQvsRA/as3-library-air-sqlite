@@ -8,7 +8,7 @@ package com.probertson.database.interfaces
 		
 		function getInsertSyntax():String;
 
-		function getUpdateSyntax( columnTitle:String, exclude:Object ):String;
+		function getUpdateSyntax( titles:Vector.<String>, data:Object ):String;
 
         function getDropSyntax( title:String, exclude:Object ):String;
 		

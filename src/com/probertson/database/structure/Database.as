@@ -40,9 +40,52 @@ package com.probertson.database.structure
 
 		}
 		
-		
+		/**
+		 * Add Database Queue Statment to perform database functions -- CRUD 
+		 * @param stmt
+		 * 
+		 */		
 		public function addToStmtQueue( stmt:QueuedStatement ):void {
+			
 			this._sqlStmtsQueue.push( stmt );
+		}
+		
+		/**
+		 * Create a table in the database;  
+		 * @param table
+		 * @param exucuteImmediately to create to table immediately rather than pooling the execution for a later time.
+		 * 
+		 */	
+		public function createTable( table:Table, exucuteImmediately:Boolean = false ):void 
+		{
+			this.addToStmtQueue( new QueuedStatement( table.getCreateSyntax() ));
+			
+			if (exucuteImmediately)
+			{
+				this.executeModify();
+			}
+			
+		}
+		
+		public function insert( table:Table, data:Object, exucuteImmediately:Boolean = false ):void
+		{
+			this.addToStmtQueue( new QueuedStatement( table.getInsertSyntax(), data ));
+			
+			if (exucuteImmediately)
+			{
+				this.executeModify();
+			}
+		}
+		 //TODO query more than one column title to match.
+		public function update( table:Table, titlesMatch:Vector.<String>, data:Object, exucuteImmediately:Boolean = false ):void
+		{
+			//			_db.addToStmtQueue( new QueuedStatement(userTable.getUpdateSyntax( "category", {id:false} ), {category:"self", firstName:"John", lastName:"Doe"}));
+			this.addToStmtQueue( new QueuedStatement( table.getUpdateSyntax( titlesMatch, data) ));
+			
+			if (exucuteImmediately)
+			{
+				this.executeModify();
+			}
 		}
 		
 		
@@ -71,10 +114,18 @@ package com.probertson.database.structure
             return this._dbFile;
         }
 
-        //Abstract functonality
-        //Abstract functonality
-        //Abstract functonality
-
+		/**
+		 * <p>Add Tables to database</p>
+		 * <p>Example:</p>
+		 * <code> 
+		 * 		var _db = new Database( "servers.db" ); </br>
+		 * 		var st = new Table( "servers" ); </br>
+		 * 		var _db.add( st );
+		 * </code>
+		 * 
+		 * @param Table
+		 * 
+		 */
 		override public function add( table:AbstractDatabase ):void
 		{
             this._tablesDictionary[ table.name ] = table;
@@ -91,8 +142,6 @@ package com.probertson.database.structure
 				this.addToStmtQueue( new QueuedStatement( this._tablesDictionary[k].getCreateSyntax() ) );
 			}
 		}
-		
-		
 
         private function safeRemove(c:AbstractDatabase):void {
             if (c.getComposite()) {

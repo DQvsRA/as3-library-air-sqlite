@@ -32,16 +32,45 @@ public class Table extends AbstractDatabase implements ISyntax
 		}
 		
 
-        //Abstract functonality
-        //Abstract functonality
-        //Abstract functonality
+		/**
+		 * <p>Add a column to a table using new Column( [column title], [column type] ).</p>
+		 * 
+		 * <p>Example:</p>
+		 * <code>db.getTableByName( serverTable ).add( new Column( "id", Column.INT_PK_AI ));</code>
 
+		 * @param new Column( [column title], [column type] 
+		 * 
+		 */		
         override public function add( column:AbstractDatabase ):void
         {
             this._columnsDictionary[ column.name ] = column;
             column.setParent( this );
 			this.length++;
         }
+		
+		/**
+		 * <p>Add Columns to a table using an object, where the properties
+		 * are the column titles, and values are the type of columns.</p>
+		 * <p>Example:</p>
+		 * <code>var userTable:String = "user"; </br>
+			ut = new Table( userTable );</br>
+			 * var userTableSchema:Object = {</br>
+					"id" : Column.INT_PK_AI,</br>
+					"category" : Column.TEXT,</br>
+					"firstName" : Column.TEXT,</br>
+					"lastName" : Column.TEXT</br>
+			};</br></br>
+			
+			ut.addByObject( userTableSchema );</code> 
+		 * @param Object
+		 * 
+		 */		
+		public function addColumnsByObject( parameterObject:Object):void {
+			for (var key:String in parameterObject) 
+			{
+				this.add( new Column( key, parameterObject[ key ] ));
+			}
+		}
 		
 		/**
 		 *Add data to columns 
@@ -191,10 +220,58 @@ public class Table extends AbstractDatabase implements ISyntax
 		 * @return 
 		 * 
 		 */		
-		public function getUpdateSyntax( columnTitle:String, exclude:Object ):String
+		
+		//TOD change queryColumnTitles to object... include prop or exclude (true or false)
+		/*
+		public function getUpdateSyntax( [column title array], data:Object ):String
+		*/
+		public function getUpdateSyntax( queryColumnTitles:Vector.<String>, data:Object ):String
 		{
+			
+			/*
+			
+			UPDATE main.testTable SET 
+				colString = :colString,
+				colInt = :colInt
+			WHERE 
+				colIntPK = :colIntPK
+			
+			*/
+			var len:int = queryColumnTitles.length;
 			var sql:String = Table.UPDATE + this.name + " SET ";
-
+			var isFirst:Boolean = true;
+			for ( var j:String in this._columnsDictionary ) {
+				
+				for (var k:int = 0; k < len; k++) {
+					
+					if ( queryColumnTitles[ k ] != this._columnsDictionary[ j ].title )
+					{
+					
+						if (!isFirst) {
+							sql += ", "; 
+						}
+						
+						sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
+						isFirst = false;
+						
+					}
+				}
+				
+				
+//				if ( this._columnsDictionary[j].title != columnTitle && data.hasOwnProperty( j ) )
+//				{
+//					if (!isFirst) {
+//						sql += ", "; 
+//					}
+//					sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
+//					isFirst = false;
+//				}
+					
+			}
+			
+			
+			
+			/*
 			var isFirst:Boolean = true;
 			for ( var j:Object in this._columnsDictionary ) {
 				
@@ -207,8 +284,16 @@ public class Table extends AbstractDatabase implements ISyntax
 				}
 				
 			}
+			*/
+			sql += " WHERE ";
 			
-			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
+			for (var l:int = 0; l < len; l++)
+			{
+				sql += queryColumnTitles[l] + " = :" + queryColumnTitles[l];
+			}
+			
+			
+//			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
 			trace(sql);
 			return sql;
 		}
