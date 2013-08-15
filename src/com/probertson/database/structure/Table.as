@@ -5,7 +5,15 @@ package com.probertson.database.structure
 	
 	import flash.utils.Dictionary;
 
-
+/**
+ *
+ * Create Table SQLite syntax for database operations.  Specifically, 
+ * this class represents only one table in a database, and holds the 
+ * syntax generation to create and modify the table.
+ *  
+ * @author Jerry_Orta
+ * 
+ */
 public class Table extends AbstractDatabase implements ISyntax
 	{
 		
@@ -72,22 +80,6 @@ public class Table extends AbstractDatabase implements ISyntax
 			}
 		}
 		
-		/**
-		 *Add data to columns 
-		 * @param dataObject
-		 * 
-		 */		
-		public function insert( dataObject:Object):void
-		{
-			//			_db.addToStmtQueue( new QueuedStatement(serversTable.getInsertSyntax(), {port:"8888", webRoot:"C:\Users\jerry_orta\Documents\GitHub"}));
-//			_db.addToStmtQueue( new QueuedStatement( this.getInsertSyntax(), dataObject));
-			//Get columns
-			/*for ( var key:Object in dataObject )
-			{
-				this.getColumnByTitle( key.toString() ).insert( dataObject[key] );
-			}*/
-			//Insert data
-		}
 
         private function safeRemove(c:AbstractDatabase):void {
             if (c.getComposite()) {
@@ -149,7 +141,6 @@ public class Table extends AbstractDatabase implements ISyntax
 			}
 			
 			sql += " )";
-			trace(sql);
 			return sql;
 		}
 		
@@ -220,81 +211,34 @@ public class Table extends AbstractDatabase implements ISyntax
 		 * @return 
 		 * 
 		 */		
-		
-		//TOD change queryColumnTitles to object... include prop or exclude (true or false)
-		/*
-		public function getUpdateSyntax( [column title array], data:Object ):String
-		*/
 		public function getUpdateSyntax( queryColumnTitles:Vector.<String>, data:Object ):String
 		{
 			
-			/*
-			
-			UPDATE main.testTable SET 
-				colString = :colString,
-				colInt = :colInt
-			WHERE 
-				colIntPK = :colIntPK
-			
-			*/
-			var len:int = queryColumnTitles.length;
 			var sql:String = Table.UPDATE + this.name + " SET ";
 			var isFirst:Boolean = true;
-			for ( var j:String in this._columnsDictionary ) {
-				
-				for (var k:int = 0; k < len; k++) {
-					
-					if ( queryColumnTitles[ k ] != this._columnsDictionary[ j ].title )
+			var len:int = queryColumnTitles.length;
+
+		
+			for ( var prop:String in data)
+			{
+				for (var j:int = 0; j < len; j++)
+				{
+					if ( queryColumnTitles[j] != prop )
 					{
-					
-						if (!isFirst) {
-							sql += ", "; 
-						}
-						
-						sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
+						if (!isFirst) {	sql += ", "; }
+						sql += this._columnsDictionary[ prop ].getUpdateSyntax();
 						isFirst = false;
-						
 					}
-				}
-				
-				
-//				if ( this._columnsDictionary[j].title != columnTitle && data.hasOwnProperty( j ) )
-//				{
-//					if (!isFirst) {
-//						sql += ", "; 
-//					}
-//					sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
-//					isFirst = false;
-//				}
-					
+				}			
 			}
-			
-			
-			
-			/*
-			var isFirst:Boolean = true;
-			for ( var j:Object in this._columnsDictionary ) {
-				
-				if ( this._columnsDictionary[j].title != columnTitle && exclude[ this._columnsDictionary[j].title ] == null ) {
-					if (!isFirst) {
-						sql += ", "; 
-					}
-					sql += this._columnsDictionary[j].getUpdateSyntax(null, null);
-					isFirst = false;
-				}
-				
-			}
-			*/
+
+
 			sql += " WHERE ";
 			
-			for (var l:int = 0; l < len; l++)
-			{
-				sql += queryColumnTitles[l] + " = :" + queryColumnTitles[l];
+			for (var q:int = 0; q < len; q++) {
+				sql += queryColumnTitles[q] + " = :" + queryColumnTitles[q];
 			}
-			
-			
-//			sql += " WHERE " + String(columnTitle) + " = :" + String(columnTitle);
-			trace(sql);
+
 			return sql;
 		}
 
@@ -316,7 +260,7 @@ public class Table extends AbstractDatabase implements ISyntax
 			}
 			
 			sql += " FROM main." + this._name;
-			trace(sql);
+			trace( sql );
 			return sql;
 		}
 	}

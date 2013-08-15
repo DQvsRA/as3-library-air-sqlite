@@ -4,15 +4,20 @@ package com.probertson.database.structure
 
 import com.probertson.database.interfaces.ISyntax;
 
-import flash.utils.Dictionary;
-
+	/**
+	 * Create Column SQLite syntax for databas operations. Specifically, 
+	 * this class represents only one column in a table, and holds
+	 * the column type as well the syntax generation to create and modify the column.
+	 *  
+	 * @author Jerry_Orta
+	 * 
+	 */
 	public class Column extends AbstractDatabase implements ISyntax
 	{
 		public static const DROP_RECORD:String = "DROP";
 		
 		private var _title:String;
 		private var _type:String;
-		private var _data:Dictionary;
 		private var _insertData:Vector.<Object>;
 		
 		/**
@@ -60,7 +65,6 @@ import flash.utils.Dictionary;
 			this._title = sColumnTitle;
 			this.name = sColumnTitle;
 			this._type = columnType;
-			this._data = new Dictionary();
 		}
 		
 		public function insert( data:* ):void
@@ -68,11 +72,7 @@ import flash.utils.Dictionary;
 			_insertData.push( data );
 		}
 		
-		public function data(sData:Object):void {
-//			trace( "COLUMN DATA: " + sData.id + ", " + encodeURIComponent( sData.data ));
-			this._data[sData.id] = sData.data;
-		}
-		
+	
 		public function operation():void {
 			trace(this._title);
 		}
@@ -85,7 +85,7 @@ import flash.utils.Dictionary;
 			return this._title;
 		}
 		
-		public function getUpdateSyntax( titles:Vector.<String>, data:Object ):String {
+		public function getUpdateSyntax( ):String {
 			return this._title + " = :" + this._title;
 		}
 

@@ -18,9 +18,11 @@ package com.probertson.database.structure
 
 		public var _createTableQueue:Vector.<Table>;
 		
-		public var executeBatch_complete:Function;
-		public var executeBatch_progress:Function;
-		public var executeBatch_error:Function;
+		public var _executeBatch_complete:Function;
+		public var _executeBatch_progress:Function;
+		public var _executeBatch_error:Function;
+		
+		public var _execute_complete:Function;
 		
 		public function Database( dbFileName:String )
 		{
@@ -77,10 +79,10 @@ package com.probertson.database.structure
 			}
 		}
 		 //TODO query more than one column title to match.
-		public function update( table:Table, titlesMatch:Vector.<String>, data:Object, exucuteImmediately:Boolean = false ):void
+		public function update( table:Table, queryTitles:Vector.<String>, data:Object, exucuteImmediately:Boolean = false ):void
 		{
 			//			_db.addToStmtQueue( new QueuedStatement(userTable.getUpdateSyntax( "category", {id:false} ), {category:"self", firstName:"John", lastName:"Doe"}));
-			this.addToStmtQueue( new QueuedStatement( table.getUpdateSyntax( titlesMatch, data) ));
+			this.addToStmtQueue( new QueuedStatement( table.getUpdateSyntax( queryTitles, data), data ));
 			
 			if (exucuteImmediately)
 			{
@@ -103,7 +105,7 @@ package com.probertson.database.structure
 		
 		public function executeModify():void 
 		{ 
-			_sqlRunner.executeModify(this._sqlStmtsQueue, this.executeBatch_complete, this.executeBatch_error, this.executeBatch_progress); 
+			_sqlRunner.executeModify(this._sqlStmtsQueue, this._executeBatch_complete, this._executeBatch_error, this._executeBatch_progress); 
 		}
 		
 		// ------- Event handling -------
@@ -152,21 +154,7 @@ package com.probertson.database.structure
 			
         }
 		
-		public function getTables():Dictionary
-		{
-			return this._tablesDictionary;
-		}
 		
-		public function getTableByName( name:String ):Table
-		{
-			return this._tablesDictionary[ name ];
-		}
-
-        override public function getChildByName( tableName:String ):AbstractDatabase
-        {
-            return this._tablesDictionary[ tableName ];
-        }
-
         override public function remove( table:AbstractDatabase ):void
         {
 			this.length--;
@@ -185,6 +173,25 @@ package com.probertson.database.structure
             }
 
         }
+		
+		
+		// GETTER AND SETTERS
+		
+		public function getTables():Dictionary
+		{
+			return this._tablesDictionary;
+		}
+		
+		public function getTableByName( name:String ):Table
+		{
+			return this._tablesDictionary[ name ];
+		}
+		
+		override public function getChildByName( tableName:String ):AbstractDatabase
+		{
+			return this._tablesDictionary[ tableName ];
+		}
+
 
 
     }
