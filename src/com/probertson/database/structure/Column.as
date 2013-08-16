@@ -85,7 +85,12 @@ import com.probertson.database.interfaces.ISyntax;
 			return this._title;
 		}
 		
-		public function getUpdateSyntax( ):String {
+		public function getUpdateSyntax():String {
+			return this._title + " = :" + this._title;
+		}
+		
+		public function getDeleteSyntax():String 
+		{
 			return this._title + " = :" + this._title;
 		}
 

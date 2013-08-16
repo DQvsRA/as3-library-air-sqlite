@@ -79,7 +79,7 @@ package com.probertson.database
 		
 		private function executeBatch_complete(results:Vector.<SQLResult>):void
 		{
-			//			trace( "Batch Complete " + results.toString() );
+						trace( "Batch Complete " + results.toString() );
 			while ( db._createTableQueue.length )
 			{
 				db._createTableQueue.pop();

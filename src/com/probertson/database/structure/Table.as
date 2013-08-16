@@ -25,6 +25,7 @@ public class Table extends AbstractDatabase implements ISyntax
 		public static const UPDATE:String = "UPDATE main.";
 		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main.";
 		public static const SELECT:String = "SELECT ";
+		public static const DELETE:String = "DELETE FROM main.";
 	
 		protected var aColumns:Array;
         protected var _columnsDictionary:Dictionary;
@@ -240,6 +241,21 @@ public class Table extends AbstractDatabase implements ISyntax
 			}
 
 			return sql;
+		}
+		
+		public function getDeleteRecordsSyntax( data:Object, logicalOperator:String ):String
+		{
+			var sql:String = Table.DELETE + this.name + " WHERE ";
+			var isFirst:Boolean = true;
+			for ( var prop:String in data)
+			{
+				if (!isFirst) {	sql += " " + logicalOperator + " "; }
+				sql += this._columnsDictionary[ prop ].getDeleteSyntax();
+				isFirst = false;
+			}
+			trace( sql );
+			return sql;
+			
 		}
 
         public function getDropSyntax( columnTitle:String, exclude:Object ):String {

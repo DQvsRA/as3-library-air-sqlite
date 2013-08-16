@@ -78,11 +78,23 @@ package com.probertson.database.structure
 				this.executeModify();
 			}
 		}
-		 //TODO query more than one column title to match.
+		 
+		
 		public function update( table:Table, queryTitles:Vector.<String>, data:Object, exucuteImmediately:Boolean = false ):void
 		{
 			//			_db.addToStmtQueue( new QueuedStatement(userTable.getUpdateSyntax( "category", {id:false} ), {category:"self", firstName:"John", lastName:"Doe"}));
 			this.addToStmtQueue( new QueuedStatement( table.getUpdateSyntax( queryTitles, data), data ));
+			
+			if (exucuteImmediately)
+			{
+				this.executeModify();
+			}
+		}
+		
+		public function deleteRecords( table:Table, data:Object, logicalOperator:String = Syntax.AND, exucuteImmediately:Boolean = false  ):void
+		{
+			//			_db.addToStmtQueue( new QueuedStatement(userTable.getUpdateSyntax( "category", {id:false} ), {category:"self", firstName:"John", lastName:"Doe"}));
+			this.addToStmtQueue( new QueuedStatement( table.getDeleteRecordsSyntax( data, logicalOperator), data ));
 			
 			if (exucuteImmediately)
 			{
