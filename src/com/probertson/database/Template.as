@@ -72,14 +72,13 @@ package com.probertson.database
 		}
 		
 
-		private function executeBatch_progress(completedCount:uint, totalCount:uint):void
+		protected function executeBatch_progress(completedCount:uint, totalCount:uint):void
 		{
 			//			trace( "Progress completedCountd: " +  completedCount + " totalCount: " + totalCount);
 		}
 		
-		private function executeBatch_complete(results:Vector.<SQLResult>):void
+		protected function executeBatch_complete(results:Object):void
 		{
-						trace( "Batch Complete " + results.toString() );
 			while ( db._createTableQueue.length )
 			{
 				db._createTableQueue.pop();
@@ -91,7 +90,7 @@ package com.probertson.database
 			}
 		}
 		
-		private function executeBatch_error(error:SQLError):void
+		protected function executeBatch_error(error:SQLError):void
 		{
 			// handle the error as desired or bubble
 			trace( error.toString() );

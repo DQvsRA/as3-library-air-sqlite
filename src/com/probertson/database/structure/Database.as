@@ -24,6 +24,8 @@ package com.probertson.database.structure
 		
 		public var _execute_complete:Function;
 		
+		
+		
 		public function Database( dbFileName:String )
 		{
 			if ( dbFileName != null )
@@ -38,8 +40,8 @@ package com.probertson.database.structure
             this._tablesDictionary = new Dictionary();
 			this._sqlStmtsQueue = new Vector.<QueuedStatement>();
 			this._createTableQueue = new Vector.<Table>();
+			
 			_sqlRunner = new SQLRunner( this._dbFile );
-
 		}
 		
 		/**
@@ -203,6 +205,8 @@ package com.probertson.database.structure
 		{
 			return this._tablesDictionary[ tableName ];
 		}
+		
+		
 
 
 

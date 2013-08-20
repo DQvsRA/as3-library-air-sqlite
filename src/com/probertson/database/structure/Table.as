@@ -34,10 +34,13 @@ public class Table extends AbstractDatabase implements ISyntax
 		
 		private var _lastRecordPK:int = 1;
 		
+		private var _data:Dictionary;
+		
 		public function Table( columnTitle:String )
 		{
 			this._name = columnTitle;
             this._columnsDictionary = new Dictionary();
+			this._data = new Dictionary();
 		}
 		
 
@@ -278,6 +281,11 @@ public class Table extends AbstractDatabase implements ISyntax
 			sql += " FROM main." + this._name;
 			trace( sql );
 			return sql;
+		}
+		
+		public function get data():Dictionary
+		{
+			return this._data;
 		}
 	}
 }
