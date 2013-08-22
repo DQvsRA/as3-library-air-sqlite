@@ -21,9 +21,11 @@ public class AbstractDatabase {
     protected var _name:String;
     protected var parentNode:AbstractDatabase = null;
 	protected var length:int = 0;
+	private var _onComplete:Function;
+	private var _onCompleteParams:Array;
 	
     public function AbstractDatabase() {
-		
+		this._onCompleteParams = new Array();
 	}
 
     public function get name():String
@@ -61,6 +63,21 @@ public class AbstractDatabase {
     public function getComposite():AbstractDatabase {
         return null;
     }
+	
+	public function set onComplete( func:Function ):void
+	{
+		this._onComplete = func;
+	}
+	
+	protected function callBack():void 
+	{
+		if (this._onComplete != null)
+		{
+			this._onComplete.apply( null, ( this._onCompleteParams.length > 0 ? this._onCompleteParams : null ) );
+		}
+	}
+	
+	
 	
 	
 }
