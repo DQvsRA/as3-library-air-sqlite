@@ -4,17 +4,17 @@ package com.probertson.database.structure
 	import com.probertson.database.interfaces.ISyntax;
 	
 	import flash.utils.Dictionary;
-
-/**
- *
- * Create Table SQLite syntax for database operations.  Specifically, 
- * this class represents only one table in a database, and holds the 
- * syntax generation to create and modify the table.
- *  
- * @author Jerry_Orta
- * 
- */
-public class Table extends AbstractDatabase implements ISyntax
+	
+	/**
+	 *
+	 * Create Table SQLite syntax for database operations.  Specifically, 
+	 * this class represents only one table in a database, and holds the 
+	 * syntax generation to create and modify the table.
+	 *  
+	 * @author Jerry_Orta
+	 * 
+	 */
+	public class Table extends AbstractDatabase implements ISyntax
 	{
 		
 		/**
@@ -26,51 +26,54 @@ public class Table extends AbstractDatabase implements ISyntax
 		public static const DROP_TABLE:String = "DROP TABLE IF EXISTS main.";
 		public static const SELECT:String = "SELECT ";
 		public static const DELETE:String = "DELETE FROM main.";
-	
+		
 		protected var aColumns:Array;
-        protected var _columnsDictionary:Dictionary;
+		protected var _columnsDictionary:Dictionary;
 		public static var isCreated:Boolean = false;
 		public var itemClass:Class;
 		
 		private var _lastRecordPK:int = 1;
 		
+		private var _data:Dictionary;
+		
 		public function Table( columnTitle:String )
 		{
 			this._name = columnTitle;
-            this._columnsDictionary = new Dictionary();
+			this._columnsDictionary = new Dictionary();
+			this._data = new Dictionary();
 		}
 		
-
+		
 		/**
 		 * <p>Add a column to a table using new Column( [column title], [column type] ).</p>
 		 * 
 		 * <p>Example:</p>
 		 * <code>db.getTableByName( serverTable ).add( new Column( "id", Column.INT_PK_AI ));</code>
-
+		 
 		 * @param new Column( [column title], [column type] 
 		 * 
 		 */		
-        override public function add( column:AbstractDatabase ):void
-        {
-            this._columnsDictionary[ column.name ] = column;
-            column.setParent( this );
+		override public function add( column:AbstractDatabase ):void
+		{
+			this._columnsDictionary[ column.name ] = column;
+			column.setParent( this );
 			this.length++;
-        }
+		}
 		
 		/**
 		 * <p>Add Columns to a table using an object, where the properties
 		 * are the column titles, and values are the type of columns.</p>
 		 * <p>Example:</p>
 		 * <code>var userTable:String = "user"; </br>
-			ut = new Table( userTable );</br>
-			 * var userTableSchema:Object = {</br>
-					"id" : Column.INT_PK_AI,</br>
-					"category" : Column.TEXT,</br>
-					"firstName" : Column.TEXT,</br>
-					"lastName" : Column.TEXT</br>
-			};</br></br>
-			
-			ut.addByObject( userTableSchema );</code> 
+		 ut = new Table( userTable );</br>
+		 * var userTableSchema:Object = {</br>
+		 "id" : Column.INT_PK_AI,</br>
+		 "category" : Column.TEXT,</br>
+		 "firstName" : Column.TEXT,</br>
+		 "lastName" : Column.TEXT</br>
+		 };</br></br>
+		 
+		 ut.addByObject( userTableSchema );</code> 
 		 * @param Object
 		 * 
 		 */		
@@ -81,42 +84,42 @@ public class Table extends AbstractDatabase implements ISyntax
 			}
 		}
 		
-
-        private function safeRemove(c:AbstractDatabase):void {
-            if (c.getComposite()) {
-                c.remove(c); // composite
-            } else {
-                c.removeParentRef();
-            }
-        }
-
-        override public function getChildByName( columnName:String ):AbstractDatabase
-        {
-            return this._columnsDictionary[ columnName ];
-        }
+		
+		private function safeRemove(c:AbstractDatabase):void {
+			if (c.getComposite()) {
+				c.remove(c); // composite
+			} else {
+				c.removeParentRef();
+			}
+		}
+		
+		override public function getChildByName( columnName:String ):AbstractDatabase
+		{
+			return this._columnsDictionary[ columnName ];
+		}
 		
 		public function getColumnByTitle( title:String):Column
 		{
 			return this._columnsDictionary[ title ];
 		}
-
-        override public function remove( column:AbstractDatabase ):void
-        {
+		
+		override public function remove( column:AbstractDatabase ):void
+		{
 			this.length--;
-            if ( column === this ) {
-                for ( var k:Object in this._columnsDictionary ) {
-                    safeRemove( this._columnsDictionary[k] );
-                    delete this._columnsDictionary[k];
-                }
-            } else {
-                for ( var j:Object in this._columnsDictionary ) {
-                    if ( this._columnsDictionary[j] == column ) {
-                        safeRemove( this._columnsDictionary[j] );
-                        delete this._columnsDictionary[j];
-                    }
-                }
-            }
-        }
+			if ( column === this ) {
+				for ( var k:Object in this._columnsDictionary ) {
+					safeRemove( this._columnsDictionary[k] );
+					delete this._columnsDictionary[k];
+				}
+			} else {
+				for ( var j:Object in this._columnsDictionary ) {
+					if ( this._columnsDictionary[j] == column ) {
+						safeRemove( this._columnsDictionary[j] );
+						delete this._columnsDictionary[j];
+					}
+				}
+			}
+		}
 		
 		/**
 		 * <p>Returns SQL syntax to creat a table for SQLite to execute.</p>
@@ -131,7 +134,7 @@ public class Table extends AbstractDatabase implements ISyntax
 		{
 			
 			var sql:String = Table.CREATE + this.name + " ( ";
-
+			
 			var isFirst:Boolean = true;
 			for ( var k:Object in this._columnsDictionary ) {
 				if (!isFirst) {
@@ -145,11 +148,11 @@ public class Table extends AbstractDatabase implements ISyntax
 			return sql;
 		}
 		
-	 	
+		
 		public function getInsertSyntax():String
 		{
 			var sql:String = Table.INSERT + this.name + " ( ";
-
+			
 			var isFirst:Boolean = true;
 			for ( var j:Object in this._columnsDictionary ) {
 				
@@ -163,10 +166,10 @@ public class Table extends AbstractDatabase implements ISyntax
 				
 				
 			}
-
+			
 			sql += " ) VALUES ( ";
 			
-
+			
 			
 			isFirst = true;
 			for ( var k:Object in this._columnsDictionary ) {
@@ -218,8 +221,8 @@ public class Table extends AbstractDatabase implements ISyntax
 			var sql:String = Table.UPDATE + this.name + " SET ";
 			var isFirst:Boolean = true;
 			var len:int = queryColumnTitles.length;
-
-		
+			
+			
 			for ( var prop:String in data)
 			{
 				for (var j:int = 0; j < len; j++)
@@ -232,14 +235,14 @@ public class Table extends AbstractDatabase implements ISyntax
 					}
 				}			
 			}
-
-
+			
+			
 			sql += " WHERE ";
 			
 			for (var q:int = 0; q < len; q++) {
 				sql += queryColumnTitles[q] + " = :" + queryColumnTitles[q];
 			}
-
+			
 			return sql;
 		}
 		
@@ -257,10 +260,10 @@ public class Table extends AbstractDatabase implements ISyntax
 			return sql;
 			
 		}
-
-        public function getDropSyntax( columnTitle:String, exclude:Object ):String {
-            return Table.DROP_TABLE + this.name;
-        }
+		
+		public function getDropSyntax( columnTitle:String, exclude:Object ):String {
+			return Table.DROP_TABLE + this.name;
+		}
 		
 		public function getSelectAllSyntax():String 
 		{
@@ -278,6 +281,11 @@ public class Table extends AbstractDatabase implements ISyntax
 			sql += " FROM main." + this._name;
 			trace( sql );
 			return sql;
+		}
+		
+		public function get data():Dictionary
+		{
+			return this._data;
 		}
 	}
 }

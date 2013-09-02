@@ -1,9 +1,9 @@
 package com.probertson.database.structure
 {
-
-
-import com.probertson.database.interfaces.ISyntax;
-
+	
+	
+	import com.probertson.database.interfaces.ISyntax;
+	
 	/**
 	 * Create Column SQLite syntax for databas operations. Specifically, 
 	 * this class represents only one column in a table, and holds
@@ -72,7 +72,7 @@ import com.probertson.database.interfaces.ISyntax;
 			_insertData.push( data );
 		}
 		
-	
+		
 		public function operation():void {
 			trace(this._title);
 		}
@@ -93,10 +93,10 @@ import com.probertson.database.interfaces.ISyntax;
 		{
 			return this._title + " = :" + this._title;
 		}
-
-        public function getDropSyntax( title:String, exclude:Object ):String {
+		
+		public function getDropSyntax( title:String, exclude:Object ):String {
 			return Column.DROP_RECORD;
-        }
+		}
 		
 		public function parameter():String
 		{

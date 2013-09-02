@@ -1,22 +1,22 @@
 package com.probertson.database
 {
 	
+	
 	import flash.utils.Dictionary;
-	import com.probertson.database.structure.Database;
-
-
-public class DatabaseManager
+	
+	
+	public class DatabaseManager
 	{
-        private var databaseDict:Dictionary;
+		private var databaseDict:Dictionary;
 		private static  var _instance:DatabaseManager;
 		
 		public function DatabaseManager( pvt:PrivateClass )
 		{
-            this.databaseDict = new Dictionary();
+			this.databaseDict = new Dictionary();
 		}
 		
-
-
+		
+		
 		public static  function getInstance ():DatabaseManager
 		{
 			if (DatabaseManager._instance == null)
@@ -27,9 +27,9 @@ public class DatabaseManager
 			return DatabaseManager._instance;
 		}
 		
-		public static function addDatabase( template:Template ):void
+		public static function addDatabase( database:Database ):void
 		{
-            DatabaseManager.getInstance().databaseDict[ template.name ] = template.database;
+			DatabaseManager.getInstance().databaseDict[ database.name ] = database;
 		}
 		
 		/**
@@ -41,7 +41,7 @@ public class DatabaseManager
 		public static function getDatabase( databaseFilename:String ):Database
 		{
 			
-            return DatabaseManager.getInstance().databaseDict[ databaseFilename ];
+			return DatabaseManager.getInstance().databaseDict[ databaseFilename ];
 		}
 		
 	}
