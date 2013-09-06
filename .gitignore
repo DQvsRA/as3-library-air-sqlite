@@ -6,21 +6,21 @@
 ####
 # FlashDevelop
 ####
-/air-sqlite.as3proj
+# /air-sqlite.as3proj
 
 ####
 # FlashBuilder
 ####
-/.settings
-/bin
-/lib
-/.actionScriptProperties
-/.flexLibProperties
-/.project
+# /.settings
+# /bin
+# /lib
+# /.actionScriptProperties
+# /.flexLibProperties
+# /.project
 
 ####
 # FlexUnit
 ####
-/.FlexUnitSettings
-*/FlexUnitApplication.mxml
-*/FlexUnitApplication-app.xml
+# /.FlexUnitSettings
+# */FlexUnitApplication.mxml
+# */FlexUnitApplication-app.xml
