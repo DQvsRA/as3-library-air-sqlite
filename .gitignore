@@ -11,12 +11,12 @@
 ####
 # FlashBuilder
 ####
-# /.settings
+.settings
 # /bin
 # /lib
-# /.actionScriptProperties
-# /.flexLibProperties
-# /.project
+.actionScriptProperties
+.flexLibProperties
+.project
 
 ####
 # FlexUnit
