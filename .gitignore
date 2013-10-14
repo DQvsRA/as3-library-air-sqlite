@@ -14,9 +14,11 @@
 .settings
 # /bin
 # /lib
+.idea
 .actionScriptProperties
 .flexLibProperties
 .project
+*.iml
 
 ####
 # FlexUnit
