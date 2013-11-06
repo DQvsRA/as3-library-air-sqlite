@@ -33,7 +33,7 @@ package com.probertson.database
 		}
 		
 		/**
-		 * Gets a database by file name. If data base does not exist, it creates a database. 
+		 * Gets a database by file name. If data base does not exist, it creates a database.  
 		 * @param databaseFilename
 		 * @return 
 		 * 
